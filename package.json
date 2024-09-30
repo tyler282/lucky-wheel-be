@@ -23,6 +23,7 @@
     "migration:create": "npm run typeorm -- migration:create migrations/migration && npm run format:migrations",
     "migration:generate": "npm run typeorm -- -d ./src/config/typeorm.config.ts migration:generate migrations/migration",
     "migration:revert": "npm run typeorm -- -d ./src/migration.ts migration:revert"
+    
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
