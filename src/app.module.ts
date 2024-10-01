@@ -8,6 +8,7 @@ import { ItemModule } from './item/item.module';
 import { RedeemPointHistoryModule } from './redeem-point-history/redeem-point-history.module';
 import { RedeemGiftModule } from './redeem-gift/redeem-gift.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { MulterModule } from '@nestjs/platform-express';
     MulterModule.register({
       dest: './uploads', // Specify the destination directory
     }),
+    AuthModule,
   ],
 })
 export class AppModule {}

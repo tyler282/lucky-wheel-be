@@ -10,4 +10,5 @@ export enum ErrorMessage {
   BAD_REQUEST = 'Bad Request',
   EXISTED = 'is already existed',
   GREATER_THAN_ZERO = 'must be greater than 0',
+  USERNAME_PASSWORD_INCORRECT = 'username or password incorrect',
 }
