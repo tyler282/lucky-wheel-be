@@ -8,4 +8,5 @@ export enum ResponseMessage {
 export enum ErrorMessage {
   IS_REQUIRED = 'is required',
   BAD_REQUEST = 'Bad Request',
+  USERNAME_PASSWORD_INCORRECT = 'username or password incorrect',
 }
