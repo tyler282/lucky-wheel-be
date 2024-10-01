@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
-import { ErrorMessage } from '../../common/message_const/error_message';
+import { ErrorMessage } from '../../common/response-message';
 
 export class CreateRedeemGiftDto {
   @ApiProperty({
