@@ -1,5 +1,3 @@
-import { Item } from 'src/item/entities/item.entity';
-import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -8,6 +6,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { User } from '../../user/entities/user.entity';
+import { Item } from '../../item/entities/item.entity';
 
 @Entity()
 export class SpinHistory {
