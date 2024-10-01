@@ -8,4 +8,6 @@ export enum ResponseMessage {
 export enum ErrorMessage {
   IS_REQUIRED = 'is required',
   BAD_REQUEST = 'Bad Request',
+  EXISTED = 'is already existed',
+  GREATER_THAN_ZERO = 'must be greater than 0',
 }
