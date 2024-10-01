@@ -22,8 +22,15 @@ export class ItemService {
   ): Promise<ResponseDto> {
     try {
       const { name, value, color, catergoryId } = createItemDto;
+      const data = await this.itemRepository.save({
+        name,
+        img: '',
+        value,
+        color,
+        catergoryId,
+      });
       console.log('file', file);
-      const imagePath = `images/${name}`;
+      const imagePath = `images/${data.id}/`;
       const imageUrl = await firebaseService.uploadImage(file, imagePath);
       if (
         catergoryId != CategoryType.GIFT &&
@@ -31,13 +38,8 @@ export class ItemService {
       ) {
         return buildErrorResponse('Invalid category');
       }
-      const data = await this.itemRepository.save({
-        name,
-        img: imageUrl,
-        value,
-        color,
-        catergoryId,
-      });
+      data.img = imageUrl;
+      await this.itemRepository.save(data);
       return {
         data,
         isSuccess: true,
