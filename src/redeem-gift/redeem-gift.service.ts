@@ -8,6 +8,8 @@ import { RedeemGift } from './entities/redeem-gift.entity';
 import { Repository } from 'typeorm';
 import { buildErrorResponse } from '../common/utils/utility';
 import { getCustomErrorMessage } from '../common/utils/custom-message-validator';
+import { ResponseDto } from '../common/dto/response.dto';
+import { ErrorMessage, ResponseMessage } from '../common/response-message';
 
 @Injectable()
 export class RedeemGiftService {
@@ -15,7 +17,7 @@ export class RedeemGiftService {
     @InjectRepository(RedeemGift)
     private readonly redeemGiftRepository: Repository<RedeemGift>,
   ) {}
-  async create(createRedeemGiftDto: CreateRedeemGiftDto) {
+  async create(createRedeemGiftDto: CreateRedeemGiftDto): Promise<ResponseDto> {
     // verify the payload
     const redeemGiftDto = plainToInstance(
       CreateRedeemGiftDto,
@@ -25,9 +27,21 @@ export class RedeemGiftService {
     if (errors.length) {
       return buildErrorResponse(getCustomErrorMessage(errors[0]));
     }
+    const existedRedeemGift = await this.redeemGiftRepository.findOne({
+      where: { name: redeemGiftDto.name },
+    });
+    // check if the gift existed
+    if (existedRedeemGift) {
+      return buildErrorResponse(`Gift ${ErrorMessage.EXISTED}`);
+    }
+    // save the data
     const newRedeemGift = this.redeemGiftRepository.create(redeemGiftDto);
     const savedRedeemGift = await this.redeemGiftRepository.save(newRedeemGift);
-    return {};
+    return {
+      data: savedRedeemGift,
+      isSuccess: true,
+      message: ResponseMessage.SUCCESS,
+    } as ResponseDto;
   }
 
   findAll() {
