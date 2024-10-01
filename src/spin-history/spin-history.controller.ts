@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { SpinHistoryService } from './spin-history.service';
 import { CreateSpinHistoryDto } from './dto/create-spin-history.dto';
 import { UpdateSpinHistoryDto } from './dto/update-spin-history.dto';
@@ -23,7 +31,10 @@ export class SpinHistoryController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSpinHistoryDto: UpdateSpinHistoryDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateSpinHistoryDto: UpdateSpinHistoryDto,
+  ) {
     return this.spinHistoryService.update(+id, updateSpinHistoryDto);
   }
 

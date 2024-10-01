@@ -4,6 +4,6 @@ import { RedeemPointHistoryController } from './redeem-point-history.controller'
 
 @Module({
   controllers: [RedeemPointHistoryController],
-  providers: [RedeemPointHistoryService]
+  providers: [RedeemPointHistoryService],
 })
 export class RedeemPointHistoryModule {}

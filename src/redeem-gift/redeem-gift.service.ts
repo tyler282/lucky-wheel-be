@@ -1,11 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRedeemGiftDto } from './dto/create-redeem-gift.dto';
 import { UpdateRedeemGiftDto } from './dto/update-redeem-gift.dto';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
+import { InjectRepository } from '@nestjs/typeorm';
+import { RedeemGift } from './entities/redeem-gift.entity';
+import { Repository } from 'typeorm';
+import { buildErrorResponse } from '../common/utils/utility';
+import { getCustomErrorMessage } from '../common/utils/custom-message-validator';
 
 @Injectable()
 export class RedeemGiftService {
-  create(createRedeemGiftDto: CreateRedeemGiftDto) {
-    return 'This action adds a new redeemGift';
+  constructor(
+    @InjectRepository(RedeemGift)
+    private readonly redeemGiftRepository: Repository<RedeemGift>,
+  ) {}
+  async create(createRedeemGiftDto: CreateRedeemGiftDto) {
+    // verify the payload
+    const redeemGiftDto = plainToInstance(
+      CreateRedeemGiftDto,
+      createRedeemGiftDto,
+    );
+    const errors = await validate(redeemGiftDto);
+    if (errors.length) {
+      return buildErrorResponse(getCustomErrorMessage(errors[0]));
+    }
+    const newRedeemGift = this.redeemGiftRepository.create(redeemGiftDto);
+    const savedRedeemGift = await this.redeemGiftRepository.save(newRedeemGift);
+    return {};
   }
 
   findAll() {
