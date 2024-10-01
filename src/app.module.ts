@@ -7,6 +7,7 @@ import { SpinHistoryModule } from './spin-history/spin-history.module';
 import { ItemModule } from './item/item.module';
 import { RedeemPointHistoryModule } from './redeem-point-history/redeem-point-history.module';
 import { RedeemGiftModule } from './redeem-gift/redeem-gift.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -25,6 +26,9 @@ import { RedeemGiftModule } from './redeem-gift/redeem-gift.module';
     ItemModule,
     RedeemPointHistoryModule,
     RedeemGiftModule,
+    MulterModule.register({
+      dest: './uploads', // Specify the destination directory
+    }),
   ],
 })
 export class AppModule {}

@@ -1,5 +1,3 @@
-import { RedeemPointHistory } from 'src/redeem-point-history/entities/redeem-point-history.entity';
-import { SpinHistory } from 'src/spin-history/entities/spin-history.entity';
 import {
   Column,
   CreateDateColumn,
@@ -8,6 +6,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { SpinHistory } from '../../spin-history/entities/spin-history.entity';
+import { RedeemPointHistory } from '../../redeem-point-history/entities/redeem-point-history.entity';
 
 @Entity()
 export class User {
