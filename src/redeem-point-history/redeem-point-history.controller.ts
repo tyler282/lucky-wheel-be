@@ -1,11 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { RedeemPointHistoryService } from './redeem-point-history.service';
 import { CreateRedeemPointHistoryDto } from './dto/create-redeem-point-history.dto';
 import { UpdateRedeemPointHistoryDto } from './dto/update-redeem-point-history.dto';
 
 @Controller('redeem-point-history')
 export class RedeemPointHistoryController {
-  constructor(private readonly redeemPointHistoryService: RedeemPointHistoryService) {}
+  constructor(
+    private readonly redeemPointHistoryService: RedeemPointHistoryService,
+  ) {}
 
   @Post()
   create(@Body() createRedeemPointHistoryDto: CreateRedeemPointHistoryDto) {
@@ -23,8 +33,14 @@ export class RedeemPointHistoryController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRedeemPointHistoryDto: UpdateRedeemPointHistoryDto) {
-    return this.redeemPointHistoryService.update(+id, updateRedeemPointHistoryDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateRedeemPointHistoryDto: UpdateRedeemPointHistoryDto,
+  ) {
+    return this.redeemPointHistoryService.update(
+      +id,
+      updateRedeemPointHistoryDto,
+    );
   }
 
   @Delete(':id')

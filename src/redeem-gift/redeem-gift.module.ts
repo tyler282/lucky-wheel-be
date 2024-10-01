@@ -4,6 +4,6 @@ import { RedeemGiftController } from './redeem-gift.controller';
 
 @Module({
   controllers: [RedeemGiftController],
-  providers: [RedeemGiftService]
+  providers: [RedeemGiftService],
 })
 export class RedeemGiftModule {}

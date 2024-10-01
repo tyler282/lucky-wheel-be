@@ -4,6 +4,6 @@ import { SpinHistoryController } from './spin-history.controller';
 
 @Module({
   controllers: [SpinHistoryController],
-  providers: [SpinHistoryService]
+  providers: [SpinHistoryService],
 })
 export class SpinHistoryModule {}
