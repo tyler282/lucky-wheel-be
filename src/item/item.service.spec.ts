@@ -6,11 +6,16 @@ import { CreateItemDto } from './dto/create-item.dto';
 import { CategoryType } from '../common/enum/category.type';
 import { ResponseDto } from '../common/dto/response.dto';
 import { ResponseMessage } from '../common/response-message';
+import { UpdateItemDto } from './dto/update-item.dto';
+import { NotFoundException } from '@nestjs/common';
 
 // Mock repository
 const mockRepository = {
   save: jest.fn(),
   find: jest.fn(),
+  findOne: jest.fn(),
+  update: jest.fn(),
+  delete: jest.fn(),
 };
 
 const firebaseService = {
@@ -153,4 +158,144 @@ describe('ItemService', () => {
       expect(mockRepository.find).toHaveBeenCalled();
     });
   });
+
+  describe("update", () => {
+    it("should update item successfully", async () => {
+      const updateItemDto: UpdateItemDto = {
+        id: 1,
+        name: 'Updated Item',
+        value: 150,
+        color: 'green',
+        catergoryId: CategoryType.GIFT,
+        img: 'https://valid-url.com/new-image.jpg',
+      };
+
+      const existingItem = {
+        id: 1,
+        name: 'Old Item',
+        value: 100,
+        color: 'red',
+        categoryId: CategoryType.GIFT,
+        img: 'https://valid-url.com/existing-image.jpg',
+      };
+
+
+      mockRepository.findOne.mockResolvedValue(existingItem);
+
+      // (firebaseService.uploadImage as jest.Mock).mockResolvedValue(
+      //   'https://valid-url.com/new-image.jpg'
+      // );
+
+      const file: Express.MulterFile = {
+        buffer: Buffer.from('newimage'),
+        originalname: 'newimage.jpg',
+        mimetype: 'image/jpeg',
+        size: 1000,
+        destination: '',
+        filename: '',
+        path: '',
+        fieldname: '',
+        encoding: '',
+      };
+
+      mockRepository.update.mockResolvedValue({ affected: 1 });
+
+      const result = await service.update(updateItemDto, file);
+
+      expect(result.isSuccess).toBe(true);
+      expect(result.message).toBe(ResponseMessage.SUCCESS);
+      expect(result.data.img).toBe('https://valid-url.com/new-image.jpg');
+
+      expect(mockRepository.update).toHaveBeenCalledWith(
+        { id: updateItemDto.id },
+        expect.objectContaining({
+          name: 'Updated Item',
+          value: 150,
+          color: 'green',
+          categoryId: CategoryType.GIFT,
+          img: 'https://valid-url.com/new-image.jpg'
+        }),
+      );
+
+      // Check that the old image was deleted
+      expect(firebaseService.deleteImage).toHaveBeenCalledWith(existingItem.img);
+    });
+
+    it("should throw NotFoundException if item does not exist", async () => {
+      const updateItemDto: UpdateItemDto = {
+        id: 1,
+        name: 'Updated Item',
+        value: 150,
+        color: 'green',
+        catergoryId: CategoryType.GIFT,
+        img: '',
+      };
+
+      mockRepository.findOne.mockResolvedValue(null);
+
+      await expect(service.update(updateItemDto, null)).rejects.toThrow(NotFoundException);
+    });
+  });
+
+
+  describe('remove', () => {
+    it('should delete item successfully if it exists', async () => {
+      const existingItem = {
+        id: 1,
+        name: 'Item to be deleted',
+        img: 'https://valid-url.com/image-to-delete.jpg',
+      };
+
+      mockRepository.findOne.mockResolvedValue(existingItem);
+
+      (firebaseService.deleteImage as jest.Mock).mockResolvedValue(undefined);
+
+      mockRepository.delete.mockResolvedValue({ affected: 1 });
+
+      const result = await service.remove(1);
+
+      expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: 1 } });
+      expect(firebaseService.deleteImage).toHaveBeenCalledWith(existingItem.img);
+
+      expect(mockRepository.delete).toHaveBeenCalledWith({ id: 1 });
+
+      expect(result.isSuccess).toBe(true);
+      expect(result.message).toBe(ResponseMessage.SUCCESS);
+      expect(result.data).toEqual({ affected: 1 });
+    });
+
+    it('should delete item successfully without deleting image if item has no image', async () => {
+      const existingItem = {
+        id: 1,
+        name: 'Item without image',
+        img: null,
+      };
+
+      mockRepository.findOne.mockResolvedValue(existingItem);
+
+      mockRepository.delete.mockResolvedValue({ affected: 1 });
+
+      const result = await service.remove(1);
+
+      expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: 1 } });
+      expect(firebaseService.deleteImage).not.toHaveBeenCalled();
+
+      expect(mockRepository.delete).toHaveBeenCalledWith({ id: 1 });
+
+      expect(result.isSuccess).toBe(true);
+      expect(result.message).toBe(ResponseMessage.SUCCESS);
+      expect(result.data).toEqual({ affected: 1 });
+    });
+
+    it('should throw NotFoundException if item does not exist', async () => {
+
+      mockRepository.findOne.mockResolvedValue(null);
+
+      await expect(service.remove(1)).rejects.toThrow(NotFoundException);
+
+      expect(mockRepository.delete).not.toHaveBeenCalled();
+      expect(firebaseService.deleteImage).not.toHaveBeenCalled();
+    });
+  });
+
 });
