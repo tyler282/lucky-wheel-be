@@ -20,7 +20,7 @@ import { ErrorMessage } from '../common/response-message';
 
 @Controller('item')
 export class ItemController {
-  constructor(private readonly itemService: ItemService) { }
+  constructor(private readonly itemService: ItemService) {}
 
   @Post()
   @UseInterceptors(FileInterceptor('file'))
@@ -28,7 +28,7 @@ export class ItemController {
   @ApiBody({
     description: 'Create Item',
     type: CreateItemDto,
-    required: true,
+    // required: true,
     schema: {
       type: 'object',
       properties: {
@@ -70,7 +70,7 @@ export class ItemController {
     schema: {
       type: 'object',
       properties: {
-        id: { type: "string" },
+        id: { type: 'string' },
         name: { type: 'string' },
         value: { type: 'number' },
         color: { type: 'string' },
@@ -82,26 +82,29 @@ export class ItemController {
       },
     },
   })
-  update(@Body() updateItemDto: UpdateItemDto, @UploadedFile() file: Express.MulterFile) {
+  update(
+    @Body() updateItemDto: UpdateItemDto,
+    @UploadedFile() file: Express.MulterFile,
+  ) {
     if (!updateItemDto.id) {
       return {
         data: null,
         isSuccess: false,
-        message: "Invalid id"
-      }
+        message: 'Invalid id',
+      };
     }
     return this.itemService.update(updateItemDto, file);
   }
 
   @Delete()
   remove(@Body() deleteItemDto: DeleteItemDto) {
-    const { id } = deleteItemDto
+    const { id } = deleteItemDto;
     if (!id) {
       return {
         data: null,
         isSuccess: false,
-        message: `Id  ${ErrorMessage.IS_REQUIRED}`
-      }
+        message: `Id  ${ErrorMessage.IS_REQUIRED}`,
+      };
     }
     return this.itemService.remove(id);
   }
