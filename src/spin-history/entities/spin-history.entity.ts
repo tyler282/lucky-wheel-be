@@ -2,7 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -23,8 +23,8 @@ export class SpinHistory {
   createdAt: Date;
   @UpdateDateColumn()
   updatedAt: Date;
-  @OneToOne(() => User, (user) => user.spinHistory)
+  @ManyToOne(() => User, (user) => user.spinHistory)
   user: User;
-  @OneToOne(() => User, (item) => item.spinHistory)
+  @ManyToOne(() => Item, (item) => item.spinHistory)
   item: Item;
 }
