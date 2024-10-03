@@ -8,6 +8,7 @@ import { ResponseDto } from '../common/dto/response.dto';
 import { buildErrorResponse } from '../common/utils/utility';
 import { ErrorMessage, ResponseMessage } from '../common/response-message';
 import { Role } from '../common/enum/role.type';
+import { BaseResponse } from '../common/utils/base-response.dto';
 
 @Injectable()
 export class UserService {
@@ -44,8 +45,16 @@ export class UserService {
     return `This action returns all user`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(phoneNumber: string): Promise<BaseResponse> {
+    const user = await this.userRepository.findOne({ where: { phoneNumber } });
+    if (!user) {
+      return buildErrorResponse(ErrorMessage.USER_NOT_FOUND);
+    }
+    return {
+      data: user,
+      isSuccess: true,
+      message: ResponseMessage.SUCCESS,
+    };
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
