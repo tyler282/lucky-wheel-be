@@ -55,8 +55,7 @@ describe('ItemService', () => {
         value: 100,
         catergoryId: 2,
       };
-
-      const file: Express.MulterFile = {
+      const file: ExpressHelper.MulterFile = {
         buffer: Buffer.from('test'),
         originalname: 'test.jpg',
         mimetype: 'image/jpeg',
@@ -93,7 +92,7 @@ describe('ItemService', () => {
         color: 'red',
         catergoryId: 3,
       };
-      const file: Express.MulterFile = {
+      const file: ExpressHelper.MulterFile = {
         buffer: Buffer.from('test'),
         originalname: 'test.jpg',
         mimetype: 'image/jpeg',
@@ -182,9 +181,9 @@ describe('ItemService', () => {
         img: 'https://firebasestorage.googleapis.com/v0/b/random-wheel-e989a.appspot.com/o/images%2F1?alt=media&token=b25c619a-7224-45b6-b384-514646d4b4ce',
       };
 
-      const file: Express.MulterFile = {
-        buffer: Buffer.from('test'),
-        originalname: 'test.jpg',
+      const file: ExpressHelper.MulterFile = {
+        buffer: Buffer.from('newimage'),
+        originalname: 'newimage.jpg',
         mimetype: 'image/jpeg',
         size: 1000,
         destination: '',
@@ -205,7 +204,25 @@ describe('ItemService', () => {
 
       expect(result.isSuccess).toBe(true);
       expect(result.message).toBe(ResponseMessage.SUCCESS);
+      expect(result.data.img).toBe('https://valid-url.com/new-image.jpg');
+
+      expect(mockRepository.update).toHaveBeenCalledWith(
+        { id: updateItemDto.id },
+        expect.objectContaining({
+          name: 'Updated Item',
+          value: 150,
+          color: 'green',
+          categoryId: CategoryType.GIFT,
+          img: 'https://valid-url.com/new-image.jpg',
+        }),
+      );
+
+      // Check that the old image was deleted
+      expect(firebaseService.deleteImage).toHaveBeenCalledWith(
+        existingItem.img,
+      );
     });
+
     it('should throw NotFoundException if item does not exist', async () => {
       const updateItemDto: UpdateItemDto = {
         id: 1,
@@ -218,6 +235,9 @@ describe('ItemService', () => {
 
       mockRepository.findOne.mockResolvedValue(null);
 
+      await expect(service.update(updateItemDto, null)).rejects.toThrow(
+        NotFoundException,
+      );
       await expect(service.update(updateItemDto, null)).rejects.toThrow(
         NotFoundException,
       );
@@ -240,7 +260,12 @@ describe('ItemService', () => {
 
       const result = await service.remove(1);
 
-      expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: 1 } });
+      expect(mockRepository.findOne).toHaveBeenCalledWith({
+        where: { id: 1 },
+      });
+      expect(firebaseService.deleteImage).toHaveBeenCalledWith(
+        existingItem.img,
+      );
 
       expect(mockRepository.delete).toHaveBeenCalledWith({ id: 1 });
 
@@ -262,7 +287,9 @@ describe('ItemService', () => {
 
       const result = await service.remove(1);
 
-      expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: 1 } });
+      expect(mockRepository.findOne).toHaveBeenCalledWith({
+        where: { id: 1 },
+      });
       expect(firebaseService.deleteImage).not.toHaveBeenCalled();
 
       expect(mockRepository.delete).toHaveBeenCalledWith({ id: 1 });

@@ -14,7 +14,7 @@ import { UpdateSpinHistoryDto } from './dto/update-spin-history.dto';
 import { AuthGuard } from '../middleware/auth.guard';
 
 @Controller('spin-history')
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 export class SpinHistoryController {
   constructor(private readonly spinHistoryService: SpinHistoryService) {}
 

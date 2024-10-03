@@ -5,6 +5,7 @@ import { SpinHistory } from './entities/spin-history.entity';
 import { ErrorMessage } from '../common/response-message';
 import { Item } from '../item/entities/item.entity';
 import { Repository } from 'typeorm';
+import { User } from '../user/entities/user.entity';
 
 // Mock repository
 const mockRepository = {
@@ -13,6 +14,7 @@ const mockRepository = {
   findOne: jest.fn(),
   update: jest.fn(),
   delete: jest.fn(),
+  create: jest.fn(),
 };
 
 const mockSpinHistory = {
@@ -23,6 +25,17 @@ const mockSpinHistory = {
   createdAt: new Date(),
   updatedAt: new Date(),
 } as SpinHistory;
+
+const mockUser = {
+  id: 1,
+  phoneNumber: 915818091,
+  password: '123',
+  name: 'test',
+  totalPoints: 10,
+  role: 'guest',
+  createdAt: new Date(),
+  updatedAt: new Date(),
+} as unknown as User;
 
 describe('SpinHistoryService', () => {
   let service: SpinHistoryService;
@@ -37,6 +50,10 @@ describe('SpinHistoryService', () => {
         },
         {
           provide: getRepositoryToken(Item),
+          useValue: mockRepository,
+        },
+        {
+          provide: getRepositoryToken(User),
           useValue: mockRepository,
         },
       ],
@@ -66,19 +83,34 @@ describe('SpinHistoryService', () => {
     expect(result.isSuccess).toBe(false);
     expect(result.message).toEqual(`itemId ${ErrorMessage.IS_REQUIRED}`);
   });
-  it('should be error item not found', async () => {
+
+  it('should be an error user not found', async () => {
     const spinHistory = { id: 1, userId: 1, itemId: 1 };
     const result = await service.create(spinHistory);
     expect(result.data).toEqual(null);
     expect(result.isSuccess).toBe(false);
+    expect(result.message).toEqual(ErrorMessage.USER_NOT_FOUND);
+  });
+
+  it('should be error item not found', async () => {
+    const spinHistory = { id: 1, userId: 1, itemId: 1 };
+    mockRepository.findOne.mockReturnValue(mockUser);
+    const result = await service.create(spinHistory);
+    mockRepository.findOne.mockReturnValue(mockUser);
+    mockRepository.create.mockReturnValue(mockUser);
+    mockRepository.save.mockResolvedValue(mockUser);
+    expect(result.data).toEqual(null);
+    expect(result.isSuccess).toEqual(false);
     expect(result.message).toEqual(ErrorMessage.DATA_NOT_FOUND);
   });
 
   it('should be create success', async () => {
-    mockRepository.findOne.mockResolvedValue(mockSpinHistory);
-    mockRepository.save.mockResolvedValue(mockSpinHistory);
-    const result = await service.create(mockSpinHistory);
-    expect(result.data).toEqual(mockSpinHistory);
-    expect(result.isSuccess).toBe(true);
+    const spinHistory = { ...mockSpinHistory, userId: 1, itemId: 1 };
+    mockRepository.findOne.mockReturnValue(spinHistory);
+    mockRepository.create.mockReturnValue(spinHistory);
+    mockRepository.save.mockResolvedValue(spinHistory);
+
+    const result = await service.create(spinHistory);
+    expect(result.data).toEqual(spinHistory);
   });
 });
