@@ -1,5 +1,5 @@
 // express.d.ts
-declare namespace Express {
+declare namespace ExpressHelper {
   export interface MulterFile {
     fieldname: string;
     originalname: string;

@@ -19,7 +19,7 @@ export class ItemService {
   ) {}
   async create(
     createItemDto: CreateItemDto,
-    file: Express.MulterFile,
+    file: ExpressHelper.MulterFile,
   ): Promise<ResponseDto> {
     try {
       const { name, value, color, catergoryId } = createItemDto;
@@ -69,7 +69,7 @@ export class ItemService {
     return `This action returns a #${id} item`;
   }
 
-  async update(updateItemDto: UpdateItemDto, file: Express.MulterFile) {
+  async update(updateItemDto: UpdateItemDto, file: ExpressHelper.MulterFile) {
     const item: Item = await this.itemRepository.findOne({
       where: { id: updateItemDto.id },
     });
