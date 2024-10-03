@@ -16,12 +16,14 @@ export class User {
   id: number;
   @Column({ type: 'varchar', length: 255, unique: true })
   phoneNumber: string;
-  @Column({ type: 'varchar', length: 255, unique: true })
+  @Column({ type: 'varchar', length: 255, unique: true, nullable: true }) // nullable when user is guest
   password: string;
   @Column({ type: 'varchar', length: 255, unique: true })
   name: string;
   @Column()
   totalPoints: number;
+  @Column({ nullable: true })
+  role: string; //admin, guest
   @CreateDateColumn()
   createdAt: Date;
   @UpdateDateColumn()
