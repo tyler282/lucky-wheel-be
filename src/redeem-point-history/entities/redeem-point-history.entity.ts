@@ -2,7 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -17,13 +17,13 @@ export class RedeemPointHistory {
   @Column()
   point: number;
   @Column()
-  reedemDate: Date;
+  redeemDate: Date;
   @Column()
   redeemGiftId: number;
   @CreateDateColumn()
   createdAt: Date;
   @UpdateDateColumn()
   updatedAt: Date;
-  @OneToOne(() => User, (user) => user.redeemPointHistory)
+  @ManyToOne(() => User, (user) => user.redeemPointHistory)
   user: User;
 }

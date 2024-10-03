@@ -21,7 +21,7 @@ export class Item {
   @Column()
   color: string;
   @Column()
-  catergoryId: number;
+  categoryId: number;
   @CreateDateColumn()
   createdAt: Date;
   @UpdateDateColumn()
