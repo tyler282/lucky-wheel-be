@@ -15,10 +15,10 @@ import { UpdateRedeemPointHistoryDto } from './dto/update-redeem-point-history.d
 export class RedeemPointHistoryController {
   constructor(
     private readonly redeemPointHistoryService: RedeemPointHistoryService,
-  ) {}
+  ) { }
 
   @Post()
-  create(@Body() createRedeemPointHistoryDto: CreateRedeemPointHistoryDto) {
+  async create(@Body() createRedeemPointHistoryDto: CreateRedeemPointHistoryDto) {
     return this.redeemPointHistoryService.create(createRedeemPointHistoryDto);
   }
 
