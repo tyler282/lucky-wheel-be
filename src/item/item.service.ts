@@ -16,10 +16,10 @@ export class ItemService {
   constructor(
     @InjectRepository(Item)
     private itemRepository: Repository<Item>,
-  ) { }
+  ) {}
   async create(
     createItemDto: CreateItemDto,
-    file: Express.MulterFile,
+    file: ExpressHelper.MulterFile,
   ): Promise<ResponseDto> {
     try {
       const { name, value, color, catergoryId } = createItemDto;
@@ -68,12 +68,10 @@ export class ItemService {
     return `This action returns a #${id} item`;
   }
 
-  async update(updateItemDto: UpdateItemDto, file: Express.MulterFile,) {
-    const item: Item = await this.itemRepository.findOne(
-      {
-        where: { id: updateItemDto.id },
-      }
-    );
+  async update(updateItemDto: UpdateItemDto, file: ExpressHelper.MulterFile) {
+    const item: Item = await this.itemRepository.findOne({
+      where: { id: updateItemDto.id },
+    });
     if (!item) {
       throw new NotFoundException(`Item ${ResponseMessage.NOT_FOUND}`);
     }
@@ -91,15 +89,13 @@ export class ItemService {
       data: item,
       isSuccess: true,
       message: ResponseMessage.SUCCESS,
-    }
+    };
   }
 
   async remove(id: number) {
-    const item: Item = await this.itemRepository.findOne(
-      {
-        where: { id },
-      }
-    );
+    const item: Item = await this.itemRepository.findOne({
+      where: { id },
+    });
     if (!item) {
       throw new NotFoundException(`Item ${ResponseMessage.NOT_FOUND}`);
     }
@@ -111,6 +107,6 @@ export class ItemService {
       data: deletedItem,
       isSuccess: true,
       message: ResponseMessage.SUCCESS,
-    }
+    };
   }
 }

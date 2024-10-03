@@ -8,7 +8,10 @@ import {
 import { storage } from './firebase-config';
 
 export class FirebaseService {
-  async uploadImage(file: Express.MulterFile, path: string): Promise<string> {
+  async uploadImage(
+    file: ExpressHelper.MulterFile,
+    path: string,
+  ): Promise<string> {
     try {
       const storageRef = ref(storage, path);
       const metadata = {

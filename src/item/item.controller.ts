@@ -44,7 +44,7 @@ export class ItemController {
     },
   })
   async create(
-    @UploadedFile() file: Express.MulterFile,
+    @UploadedFile() file: ExpressHelper.MulterFile,
     @Body() createItemDto: CreateItemDto,
   ) {
     // Handle the file and other form data
@@ -84,7 +84,7 @@ export class ItemController {
   })
   update(
     @Body() updateItemDto: UpdateItemDto,
-    @UploadedFile() file: Express.MulterFile,
+    @UploadedFile() file: ExpressHelper.MulterFile,
   ) {
     if (!updateItemDto.id) {
       return {
