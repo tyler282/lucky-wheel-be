@@ -16,13 +16,19 @@ export class ItemService {
   constructor(
     @InjectRepository(Item)
     private itemRepository: Repository<Item>,
-  ) { }
+  ) {}
   async create(
     createItemDto: CreateItemDto,
     file: Express.MulterFile,
   ): Promise<ResponseDto> {
     try {
       const { name, value, color, catergoryId } = createItemDto;
+      if (
+        catergoryId != CategoryType.GIFT &&
+        catergoryId != CategoryType.POINT
+      ) {
+        return buildErrorResponse('Invalid category');
+      }
       const data = await this.itemRepository.save({
         name,
         img: '',
@@ -30,17 +36,12 @@ export class ItemService {
         color,
         catergoryId,
       });
-      console.log('file', file);
-      const imagePath = `images/${data.id}/`;
-      const imageUrl = await firebaseService.uploadImage(file, imagePath);
-      if (
-        catergoryId != CategoryType.GIFT &&
-        catergoryId != CategoryType.POINT
-      ) {
-        return buildErrorResponse('Invalid category');
+      if (file) {
+        const imagePath = `images/${data.id}/`;
+        const imageUrl = await firebaseService.uploadImage(file, imagePath);
+        data.img = imageUrl;
+        await this.itemRepository.save(data);
       }
-      data.img = imageUrl;
-      await this.itemRepository.save(data);
       return {
         data,
         isSuccess: true,
@@ -68,12 +69,10 @@ export class ItemService {
     return `This action returns a #${id} item`;
   }
 
-  async update(updateItemDto: UpdateItemDto, file: Express.MulterFile,) {
-    const item: Item = await this.itemRepository.findOne(
-      {
-        where: { id: updateItemDto.id },
-      }
-    );
+  async update(updateItemDto: UpdateItemDto, file: Express.MulterFile) {
+    const item: Item = await this.itemRepository.findOne({
+      where: { id: updateItemDto.id },
+    });
     if (!item) {
       throw new NotFoundException(`Item ${ResponseMessage.NOT_FOUND}`);
     }
@@ -91,15 +90,13 @@ export class ItemService {
       data: item,
       isSuccess: true,
       message: ResponseMessage.SUCCESS,
-    }
+    };
   }
 
   async remove(id: number) {
-    const item: Item = await this.itemRepository.findOne(
-      {
-        where: { id },
-      }
-    );
+    const item: Item = await this.itemRepository.findOne({
+      where: { id },
+    });
     if (!item) {
       throw new NotFoundException(`Item ${ResponseMessage.NOT_FOUND}`);
     }
@@ -111,6 +108,6 @@ export class ItemService {
       data: deletedItem,
       isSuccess: true,
       message: ResponseMessage.SUCCESS,
-    }
+    };
   }
 }
