@@ -11,6 +11,7 @@ import { validate } from 'class-validator';
 import { buildErrorResponse } from '../common/utils/utility';
 import { getCustomErrorMessage } from '../common/utils/custom-message-validator';
 import { Item } from '../item/entities/item.entity';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class SpinHistoryService {
@@ -19,6 +20,8 @@ export class SpinHistoryService {
     private readonly SpinHistoryRepo: Repository<SpinHistory>,
     @InjectRepository(Item)
     private readonly itemRepo: Repository<Item>,
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>,
   ) {}
   async create(
     createSpinHistoryDto: CreateSpinHistoryDto,
@@ -33,19 +36,34 @@ export class SpinHistoryService {
       return buildErrorResponse(getCustomErrorMessage(errors[0]));
     }
 
-    const itemExist = await this.itemRepo.findOne({
+    const userExisted = await this.userRepo.findOne({
+      where: {
+        id: createSpinHistoryDto.userId,
+      },
+    });
+    if (!userExisted) {
+      return buildErrorResponse(ErrorMessage.USER_NOT_FOUND);
+    }
+
+    const itemExisted = await this.itemRepo.findOne({
       where: {
         id: createSpinHistoryDto.itemId,
       },
     });
-    if (!itemExist) {
+
+    if (!itemExisted) {
       return buildErrorResponse(ErrorMessage.DATA_NOT_FOUND);
     }
+
+    userExisted.totalPoints += itemExisted.value;
+    await this.userRepo.save(userExisted);
+
     const spinHistory = await this.SpinHistoryRepo.create({
       userId: createSpinHistoryDto.userId,
       itemId: createSpinHistoryDto.itemId,
-      value: itemExist.value,
+      value: itemExisted.value,
     });
+    await this.SpinHistoryRepo.save(spinHistory);
 
     return {
       data: spinHistory,
