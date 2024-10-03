@@ -25,24 +25,6 @@ export class ItemController {
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    description: 'Create Item',
-    type: CreateItemDto,
-    // required: true,
-    schema: {
-      type: 'object',
-      properties: {
-        name: { type: 'string' },
-        value: { type: 'number' },
-        color: { type: 'string' },
-        categoryId: { type: 'string' },
-        file: {
-          type: 'string',
-          format: 'binary',
-        },
-      },
-    },
-  })
   async create(
     @UploadedFile() file: Express.MulterFile,
     @Body() createItemDto: CreateItemDto,
