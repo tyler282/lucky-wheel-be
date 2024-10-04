@@ -56,7 +56,11 @@ export class ItemService {
 
   async findAll(): Promise<ResponseDto> {
     try {
-      const items = await this.itemRepository.find();
+      const items = await this.itemRepository.find({
+        order: {
+          createdAt: 'ASC',
+        },
+      });
       return {
         data: items,
         isSuccess: true,
