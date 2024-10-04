@@ -22,7 +22,7 @@ export class ItemService {
     file: ExpressHelper.MulterFile,
   ): Promise<ResponseDto> {
     try {
-      const { name, value, color, categoryId } = createItemDto;
+      const { name, value, weight, color, categoryId } = createItemDto;
       if (
         categoryId != CategoryType.GIFT &&
         categoryId != CategoryType.POINT &&
@@ -35,6 +35,7 @@ export class ItemService {
         img: '',
         value,
         color,
+        weight,
         categoryId,
       });
       if (file) {

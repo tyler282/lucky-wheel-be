@@ -18,6 +18,8 @@ export class Item {
   img: string;
   @Column()
   value: number;
+  @Column({ default: 1 })
+  weight: number;
   @Column()
   color: string;
   @Column()
