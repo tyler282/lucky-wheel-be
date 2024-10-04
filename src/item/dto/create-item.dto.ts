@@ -6,6 +6,8 @@ export class CreateItemDto {
   @ApiProperty({})
   value: number;
   @ApiProperty({})
+  weight: number;
+  @ApiProperty({})
   color: string;
   @ApiProperty({})
   categoryId: number;
