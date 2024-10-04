@@ -9,14 +9,13 @@ import { ResponseDto } from '../common/dto/response.dto';
 import { buildErrorResponse } from '../common/utils/utility';
 import { CategoryType } from '../common/enum/category.type';
 import { ResponseMessage } from '../common/response-message';
-import { DeleteItemDto } from './dto/delete-item.dto';
 
 @Injectable()
 export class ItemService {
   constructor(
     @InjectRepository(Item)
     private itemRepository: Repository<Item>,
-  ) {}
+  ) { }
   async create(
     createItemDto: CreateItemDto,
     file: ExpressHelper.MulterFile,
