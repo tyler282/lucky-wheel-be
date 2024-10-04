@@ -15,12 +15,11 @@ import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
-import { DeleteItemDto } from './dto/delete-item.dto';
 import { ErrorMessage } from '../common/response-message';
 
 @Controller('item')
 export class ItemController {
-  constructor(private readonly itemService: ItemService) {}
+  constructor(private readonly itemService: ItemService) { }
 
   @Post()
   @UseInterceptors(FileInterceptor('file'))
@@ -78,9 +77,8 @@ export class ItemController {
     return this.itemService.update(updateItemDto, file);
   }
 
-  @Delete()
-  remove(@Body() deleteItemDto: DeleteItemDto) {
-    const { id } = deleteItemDto;
+  @Delete(":id")
+  remove(@Param("id") id: string) {
     if (!id) {
       return {
         data: null,
@@ -88,6 +86,6 @@ export class ItemController {
         message: `Id  ${ErrorMessage.IS_REQUIRED}`,
       };
     }
-    return this.itemService.remove(id);
+    return this.itemService.remove(+id);
   }
 }
