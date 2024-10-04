@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateRedeemPointHistoryDto } from './dto/create-redeem-point-history.dto';
 import { UpdateRedeemPointHistoryDto } from './dto/update-redeem-point-history.dto';
 import { RedeemPointHistory } from './entities/redeem-point-history.entity';
@@ -37,6 +37,11 @@ export class RedeemPointHistoryService {
     if (!checkGift) {
       throw new NotFoundException(`Gift ${ResponseMessage.NOT_FOUND}`);
     }
+    if (checkUser.totalPoints < checkGift.totalPoint) {
+      throw new BadRequestException(`User ${ResponseMessage.NOT_ENOUGH_POINTS}`);
+    }
+    checkUser.totalPoints = checkUser.totalPoints - checkGift.totalPoint;
+    await this.userRepository.update({ id: checkUser.id }, checkUser);
     const data = await this.redeemHistoryRepository.save({
       userId: createRedeemPointHistoryDto.userId,
       point: createRedeemPointHistoryDto.point,
