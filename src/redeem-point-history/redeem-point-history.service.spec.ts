@@ -7,7 +7,7 @@ import { RedeemPointHistory } from './entities/redeem-point-history.entity';
 import { find } from 'rxjs';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CreateRedeemPointHistoryDto } from './dto/create-redeem-point-history.dto';
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { ResponseMessage } from '../common/response-message';
 
 describe('RedeemPointHistoryService', () => {
@@ -18,6 +18,7 @@ describe('RedeemPointHistoryService', () => {
 
   const mockUserRepository = {
     findOne: jest.fn(),
+    update: jest.fn(),
   };
   const mockRedeemGiftRepository = {
     findOne: jest.fn(),
@@ -58,17 +59,36 @@ describe('RedeemPointHistoryService', () => {
       point: 10,
       redeemGiftId: 1
     }
+    const mockUser = {
+      id: 1,
+      phoneNumber: '1234567890',
+      name: 'test',
+      totalPoints: 100,
+    };
+    const mockRedeemGift = {
+      id: 1,
+      totalPoint: 10,
+      giftName: 'test',
+    }
     it("Should return an error if UserId not found", async () => {
       mockUserRepository.findOne = jest.fn().mockResolvedValue(null);
       await expect(service.create(createRedeemPointHistoryDto))
         .rejects
         .toThrow(new NotFoundException(`User ${ResponseMessage.NOT_FOUND}`));
     })
+    it("Should return an error if UserPoint not enough", async () => {
+      mockUserRepository.findOne = jest.fn().mockResolvedValue(mockUser);
+      mockRedeemGift.totalPoint = 1000;
+      mockRedeemGiftRepository.findOne = jest.fn().mockResolvedValue(mockRedeemGift);
+      await expect(service.create(createRedeemPointHistoryDto))
+        .rejects
+        .toThrow(new BadRequestException(`User ${ResponseMessage.NOT_ENOUGH_POINTS}`));
+    })
     it("should return an error if GiftId not found", async () => {
       mockRedeemGiftRepository.findOne = jest.fn().mockResolvedValue(null);
       await expect(service.create(createRedeemPointHistoryDto))
         .rejects
-        .toThrow(new NotFoundException(`User ${ResponseMessage.NOT_FOUND}`));
+        .toThrow(new NotFoundException(`Gift ${ResponseMessage.NOT_FOUND}`));
     })
     it('Should create history redeem point successfully', async () => {
       const mockUser = { id: 1 };
@@ -82,6 +102,7 @@ describe('RedeemPointHistoryService', () => {
 
       mockUserRepository.findOne.mockResolvedValue(mockUser);
       mockRedeemGiftRepository.findOne.mockResolvedValue(mockGift);
+      mockUserRepository.update.mockResolvedValue({ id: mockUser.id, mockUser });
       mockRedeemPointHistoryRepository.save.mockResolvedValue(mockRedeemPointHistory);
 
       const result = await service.create(createRedeemPointHistoryDto);
