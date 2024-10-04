@@ -3,6 +3,7 @@ export enum ResponseMessage {
   ERROR = 'Error',
   NOT_FOUND = 'Not Found',
   INVALID_CREDENTIALS = 'Invalid Credentials',
+  NOT_ENOUGH_POINTS = 'Not enough points',
 }
 
 export enum ErrorMessage {
