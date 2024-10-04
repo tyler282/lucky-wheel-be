@@ -18,7 +18,7 @@ export class Item {
   img: string;
   @Column()
   value: number;
-  @Column({ nullable: true })
+  @Column({ default: 1 })
   weight: number;
   @Column()
   color: string;
