@@ -22,10 +22,11 @@ export class ItemService {
     file: ExpressHelper.MulterFile,
   ): Promise<ResponseDto> {
     try {
-      const { name, value, color, catergoryId } = createItemDto;
+      const { name, value, color, categoryId } = createItemDto;
       if (
-        catergoryId != CategoryType.GIFT &&
-        catergoryId != CategoryType.POINT
+        categoryId != CategoryType.GIFT &&
+        categoryId != CategoryType.POINT &&
+        categoryId != CategoryType.OTHER
       ) {
         return buildErrorResponse('Invalid category');
       }
@@ -34,7 +35,7 @@ export class ItemService {
         img: '',
         value,
         color,
-        catergoryId,
+        categoryId,
       });
       if (file) {
         const imagePath = `images/${data.id}/`;
