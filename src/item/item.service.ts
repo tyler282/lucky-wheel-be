@@ -67,10 +67,6 @@ export class ItemService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} item`;
-  }
-
   async update(updateItemDto: UpdateItemDto, file: ExpressHelper.MulterFile) {
     const item: Item = await this.itemRepository.findOne({
       where: { id: updateItemDto.id },

@@ -41,10 +41,6 @@ export class UserService {
     }
   }
 
-  findAll() {
-    return `This action returns all user`;
-  }
-
   async findOne(phoneNumber: string): Promise<BaseResponse> {
     const user = await this.userRepository.findOne({ where: { phoneNumber } });
     if (!user) {
@@ -55,13 +51,5 @@ export class UserService {
       isSuccess: true,
       message: ResponseMessage.SUCCESS,
     };
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 }

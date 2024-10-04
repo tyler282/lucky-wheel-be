@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateRedeemPointHistoryDto } from './dto/create-redeem-point-history.dto';
 import { UpdateRedeemPointHistoryDto } from './dto/update-redeem-point-history.dto';
 import { RedeemPointHistory } from './entities/redeem-point-history.entity';
@@ -10,7 +14,6 @@ import { ResponseMessage } from '../common/response-message';
 
 @Injectable()
 export class RedeemPointHistoryService {
-
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
@@ -18,27 +21,29 @@ export class RedeemPointHistoryService {
     private redeemHistoryRepository: Repository<RedeemPointHistory>,
     @InjectRepository(RedeemGift)
     private redeemGiftRepository: Repository<RedeemGift>,
-  ) { }
+  ) {}
 
   async create(createRedeemPointHistoryDto: CreateRedeemPointHistoryDto) {
     let checkUser = await this.userRepository.findOne({
       where: {
         id: createRedeemPointHistoryDto.userId,
-      }
-    })
+      },
+    });
     if (!checkUser) {
       throw new NotFoundException(`User ${ResponseMessage.NOT_FOUND}`);
     }
     let checkGift = await this.redeemGiftRepository.findOne({
       where: {
         id: createRedeemPointHistoryDto.redeemGiftId,
-      }
-    })
+      },
+    });
     if (!checkGift) {
       throw new NotFoundException(`Gift ${ResponseMessage.NOT_FOUND}`);
     }
     if (checkUser.totalPoints < checkGift.totalPoint) {
-      throw new BadRequestException(`User ${ResponseMessage.NOT_ENOUGH_POINTS}`);
+      throw new BadRequestException(
+        `User ${ResponseMessage.NOT_ENOUGH_POINTS}`,
+      );
     }
     checkUser.totalPoints = checkUser.totalPoints - checkGift.totalPoint;
     await this.userRepository.update({ id: checkUser.id }, checkUser);
@@ -53,22 +58,6 @@ export class RedeemPointHistoryService {
       isSuccess: true,
       message: ResponseMessage.SUCCESS,
     };
-  }
-
-  findAll() {
-    return `This action returns all redeemPointHistory`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} redeemPointHistory`;
-  }
-
-  update(id: number, updateRedeemPointHistoryDto: UpdateRedeemPointHistoryDto) {
-    return `This action updates a #${id} redeemPointHistory`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} redeemPointHistory`;
   }
 
   private getCurrentDateInVietnam() {

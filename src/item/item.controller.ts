@@ -38,11 +38,6 @@ export class ItemController {
     return this.itemService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.itemService.findOne(+id);
-  }
-
   @Put()
   @UseInterceptors(FileInterceptor('file'))
   @ApiBody({

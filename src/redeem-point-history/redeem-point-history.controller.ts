@@ -15,36 +15,12 @@ import { UpdateRedeemPointHistoryDto } from './dto/update-redeem-point-history.d
 export class RedeemPointHistoryController {
   constructor(
     private readonly redeemPointHistoryService: RedeemPointHistoryService,
-  ) { }
+  ) {}
 
   @Post()
-  async create(@Body() createRedeemPointHistoryDto: CreateRedeemPointHistoryDto) {
-    return this.redeemPointHistoryService.create(createRedeemPointHistoryDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.redeemPointHistoryService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.redeemPointHistoryService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateRedeemPointHistoryDto: UpdateRedeemPointHistoryDto,
+  async create(
+    @Body() createRedeemPointHistoryDto: CreateRedeemPointHistoryDto,
   ) {
-    return this.redeemPointHistoryService.update(
-      +id,
-      updateRedeemPointHistoryDto,
-    );
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.redeemPointHistoryService.remove(+id);
+    return this.redeemPointHistoryService.create(createRedeemPointHistoryDto);
   }
 }

@@ -43,20 +43,4 @@ export class RedeemGiftService {
       message: ResponseMessage.SUCCESS,
     } as ResponseDto;
   }
-
-  findAll() {
-    return `This action returns all redeemGift`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} redeemGift`;
-  }
-
-  update(id: number, updateRedeemGiftDto: UpdateRedeemGiftDto) {
-    return `This action updates a #${id} redeemGift`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} redeemGift`;
-  }
 }

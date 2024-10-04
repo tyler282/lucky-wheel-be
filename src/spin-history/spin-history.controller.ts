@@ -22,27 +22,4 @@ export class SpinHistoryController {
   create(@Body() createSpinHistoryDto: CreateSpinHistoryDto) {
     return this.spinHistoryService.create(createSpinHistoryDto);
   }
-
-  @Get()
-  findAll() {
-    return this.spinHistoryService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.spinHistoryService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateSpinHistoryDto: UpdateSpinHistoryDto,
-  ) {
-    return this.spinHistoryService.update(+id, updateSpinHistoryDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.spinHistoryService.remove(+id);
-  }
 }
