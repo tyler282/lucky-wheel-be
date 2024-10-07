@@ -8,4 +8,6 @@ export class UpdateItemDto extends PartialType(CreateItemDto) {
     id: number;
     @IsString()
     img?: string;
+    @IsString()
+    file?: string;
 }

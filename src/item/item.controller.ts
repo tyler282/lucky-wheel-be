@@ -39,8 +39,9 @@ export class ItemController {
 
   @Put()
   @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
   @ApiBody({
-    description: 'Create Item',
+    description: 'Update Item',
     type: UpdateItemDto,
     required: true,
     schema: {
@@ -60,7 +61,7 @@ export class ItemController {
   })
   update(
     @Body() updateItemDto: UpdateItemDto,
-    @UploadedFile() file: ExpressHelper.MulterFile,
+    @UploadedFile() file: ExpressHelper.MulterFile | string,
   ) {
     if (!updateItemDto.id) {
       return {
@@ -69,7 +70,11 @@ export class ItemController {
         message: 'Invalid id',
       };
     }
+    if (!file) {
+      file = updateItemDto.file;
+    }
     return this.itemService.update(updateItemDto, file);
+
   }
 
   @Delete(":id")

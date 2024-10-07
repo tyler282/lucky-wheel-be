@@ -70,20 +70,31 @@ export class ItemService {
     }
   }
 
-  async update(updateItemDto: UpdateItemDto, file: ExpressHelper.MulterFile) {
+  async update(updateItemDto: UpdateItemDto, file: ExpressHelper.MulterFile | string) {
     const item: Item = await this.itemRepository.findOne({
       where: { id: updateItemDto.id },
     });
     if (!item) {
       throw new NotFoundException(`Item ${ResponseMessage.NOT_FOUND}`);
     }
-    if (file) {
+    if (file && typeof file !== "string") {
       if (item.img) {
         await firebaseService.deleteImage(item.img);
       }
       const imagePath = `images/${item.id}/`;
       const imageUrl = await firebaseService.uploadImage(file, imagePath);
       updateItemDto.img = imageUrl;
+    }
+    if (file && typeof file === "string") {
+      updateItemDto.img = updateItemDto.file;
+      delete updateItemDto.file;
+    }
+    if (!file) {
+      if (item.img) {
+        await firebaseService.deleteImage(item.img);
+      }
+      updateItemDto.img = "";
+      delete updateItemDto.file;
     }
     Object.assign(item, updateItemDto);
     const data = await this.itemRepository.update({ id: item.id }, item);
