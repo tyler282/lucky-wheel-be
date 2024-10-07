@@ -84,16 +84,18 @@ export class ItemService {
       const imagePath = `images/${item.id}/`;
       const imageUrl = await firebaseService.uploadImage(file, imagePath);
       updateItemDto.img = imageUrl;
-    } else if (!file) {
+    }
+    if (file && typeof file === "string") {
+      updateItemDto.img = updateItemDto.file;
+      delete updateItemDto.file;
+    }
+    if (!file) {
       if (item.img) {
         await firebaseService.deleteImage(item.img);
       }
       updateItemDto.img = "";
-    } else {
-      updateItemDto.img = updateItemDto.file;
       delete updateItemDto.file;
     }
-    console.log(updateItemDto);
     Object.assign(item, updateItemDto);
     const data = await this.itemRepository.update({ id: item.id }, item);
     return {
