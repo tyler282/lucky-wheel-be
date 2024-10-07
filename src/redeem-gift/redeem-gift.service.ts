@@ -76,14 +76,17 @@ export class RedeemGiftService {
       return buildErrorResponse(ErrorMessage.DATA_NOT_FOUND);
     }
     // save the data
-    Object.assign(existedRedeemGift, updateredeemGift);
+    Object.assign(existedRedeemGift, {
+      ...updateredeemGift,
+      updatedAt: new Date(),
+    });
 
-    const updatedRedeemGift = await this.redeemGiftRepository.update(
+    await this.redeemGiftRepository.update(
       { id: existedRedeemGift.id },
       existedRedeemGift,
     );
     return {
-      data: updatedRedeemGift,
+      data: existedRedeemGift,
       isSuccess: true,
       message: ResponseMessage.SUCCESS,
     };

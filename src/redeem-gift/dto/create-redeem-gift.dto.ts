@@ -1,15 +1,8 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Min,
-} from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
 import { ErrorMessage } from '../../common/response-message';
 
 export class CreateRedeemGiftDto {
-  @ApiPropertyOptional()
   @ApiProperty({
     description: 'Total point of the redeem gift',
     minimum: 1,
