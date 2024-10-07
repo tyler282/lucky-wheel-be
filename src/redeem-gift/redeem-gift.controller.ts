@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { RedeemGiftService } from './redeem-gift.service';
 import { CreateRedeemGiftDto } from './dto/create-redeem-gift.dto';
@@ -18,5 +19,14 @@ export class RedeemGiftController {
   @Post()
   create(@Body() createRedeemGiftDto: CreateRedeemGiftDto) {
     return this.redeemGiftService.create(createRedeemGiftDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.redeemGiftService.remove(+id);
+  }
+  @Put()
+  update(@Body() updateRedeemGiftDto: UpdateRedeemGiftDto) {
+    return this.redeemGiftService.update(updateRedeemGiftDto);
   }
 }
