@@ -42,7 +42,9 @@ export class UserService {
   }
 
   async findOne(phoneNumber: string): Promise<BaseResponse> {
-    const user = await this.userRepository.findOne({ where: { phoneNumber } });
+    const user = await this.userRepository.findOne({
+      where: { phoneNumber: phoneNumber },
+    });
     if (!user) {
       return buildErrorResponse(ErrorMessage.USER_NOT_FOUND);
     }
