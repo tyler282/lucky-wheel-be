@@ -4,7 +4,7 @@ import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto, UpdateItemOrderDto } from './dto/update-item.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Item } from './entities/item.entity';
-import { Between, In, Repository } from 'typeorm';
+import { Between, In, MoreThan, Repository } from 'typeorm';
 import { ResponseDto } from '../common/dto/response.dto';
 import { buildErrorResponse } from '../common/utils/utility';
 import { CategoryType } from '../common/enum/category.type';
@@ -66,7 +66,7 @@ export class ItemService {
     try {
       const items = await this.itemRepository.find({
         order: {
-          createdAt: 'ASC',
+          order: 'ASC',
         },
       });
       return {
@@ -118,18 +118,33 @@ export class ItemService {
   }
 
   async remove(id: number) {
-    const item: Item = await this.itemRepository.findOne({
+    const currentItem: Item = await this.itemRepository.findOne({
       where: { id },
     });
-    if (!item) {
+    if (!currentItem) {
       throw new NotFoundException(`Item ${ResponseMessage.NOT_FOUND}`);
     }
-    if (item.img) {
-      await firebaseService.deleteImage(item.img);
+
+    const listItem = await this.itemRepository.find({
+      where: { order: MoreThan(currentItem.order) },
+    });
+
+    this.entityManager.transaction(async (transactionalEntityManager) => {
+      await transactionalEntityManager.delete(Item, { id });
+
+      for (const item of listItem) {
+        await transactionalEntityManager.update(Item, item.id, {
+          order: item.order - 1,
+        });
+      }
+    });
+
+    if (currentItem.img) {
+      await firebaseService.deleteImage(currentItem.img);
     }
-    const deletedItem = await this.itemRepository.delete({ id });
+    // const deletedItem = await this.itemRepository.delete({ id });
     return {
-      data: deletedItem,
+      data: currentItem,
       isSuccess: true,
       message: ResponseMessage.SUCCESS,
     };
