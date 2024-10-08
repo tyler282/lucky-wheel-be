@@ -129,15 +129,19 @@ export class ItemService {
       where: { order: MoreThan(currentItem.order) },
     });
 
-    this.entityManager.transaction(async (transactionalEntityManager) => {
-      await transactionalEntityManager.delete(Item, { id });
+    try {
+      this.entityManager.transaction(async (transactionalEntityManager) => {
+        await transactionalEntityManager.delete(Item, { id });
 
-      for (const item of listItem) {
-        await transactionalEntityManager.update(Item, item.id, {
-          order: item.order - 1,
-        });
-      }
-    });
+        for (const item of listItem) {
+          await transactionalEntityManager.update(Item, item.id, {
+            order: item.order - 1,
+          });
+        }
+      });
+    } catch (err) {
+      return buildErrorResponse(err.message);
+    }
 
     if (currentItem.img) {
       await firebaseService.deleteImage(currentItem.img);
