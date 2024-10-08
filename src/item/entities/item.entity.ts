@@ -24,6 +24,8 @@ export class Item {
   color: string;
   @Column()
   categoryId: number;
+  @Column()
+  order: number;
   @CreateDateColumn()
   createdAt: Date;
   @UpdateDateColumn()
