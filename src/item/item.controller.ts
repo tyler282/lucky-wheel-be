@@ -12,14 +12,14 @@ import {
 } from '@nestjs/common';
 import { ItemService } from './item.service';
 import { CreateItemDto } from './dto/create-item.dto';
-import { UpdateItemDto } from './dto/update-item.dto';
+import { UpdateItemDto, UpdateItemOrderDto } from './dto/update-item.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { ErrorMessage } from '../common/response-message';
 
 @Controller('item')
 export class ItemController {
-  constructor(private readonly itemService: ItemService) { }
+  constructor(private readonly itemService: ItemService) {}
 
   @Post()
   @UseInterceptors(FileInterceptor('file'))
@@ -74,11 +74,10 @@ export class ItemController {
       file = updateItemDto.file;
     }
     return this.itemService.update(updateItemDto, file);
-
   }
 
-  @Delete(":id")
-  remove(@Param("id") id: string) {
+  @Delete(':id')
+  remove(@Param('id') id: string) {
     if (!id) {
       return {
         data: null,
@@ -87,5 +86,10 @@ export class ItemController {
       };
     }
     return this.itemService.remove(+id);
+  }
+
+  @Post('reorder')
+  reorder(@Body() reorderLists: UpdateItemOrderDto[]) {
+    return this.itemService.reorder(reorderLists);
   }
 }
