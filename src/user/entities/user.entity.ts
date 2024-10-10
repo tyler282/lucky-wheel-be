@@ -20,7 +20,7 @@ export class User {
   password: string;
   @Column({ type: 'varchar', length: 255, unique: true })
   name: string;
-  @Column()
+  @Column({ default: 0 })
   totalPoints: number;
   @Column({ nullable: true })
   role: string; //admin, guest
