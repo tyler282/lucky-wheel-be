@@ -29,4 +29,8 @@ export class RedeemGiftController {
   update(@Body() updateRedeemGiftDto: UpdateRedeemGiftDto) {
     return this.redeemGiftService.update(updateRedeemGiftDto);
   }
+  @Get()
+  findAll() {
+    return this.redeemGiftService.findAll();
+  }
 }

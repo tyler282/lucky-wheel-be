@@ -91,4 +91,14 @@ export class RedeemGiftService {
       message: ResponseMessage.SUCCESS,
     };
   }
+  async findAll() {
+    const redeemGifts = await this.redeemGiftRepository.find({
+      order: { totalPoint: 'DESC' },
+    });
+    return {
+      data: redeemGifts,
+      isSuccess: true,
+      message: ResponseMessage.SUCCESS,
+    };
+  }
 }
