@@ -77,13 +77,12 @@ export class RankingService {
         phoneNumber: '',
         points: 0,
       };
-      const totalRedeemPoints = redeemPoints[userId] || { points: 0 };
-
+      // const totalRedeemPoints = redeemPoints[userId] || { points: 0 };
       return {
         userId: totalSpinPoints.userId,
         username: totalSpinPoints.name,
         phoneNumber: totalSpinPoints.phoneNumber,
-        points: totalSpinPoints.points - totalRedeemPoints.points,
+        points: totalSpinPoints.points,
       };
     });
     return {
